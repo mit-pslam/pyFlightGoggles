@@ -54,8 +54,6 @@ void FlightGogglesClient::terminateConnections()
     // download_socket.unbind(client_address + ":" + download_port);
     upload_socket.close();
     download_socket.close();
-    delete upload_socket;
-    delete download_socket;
     std::cout << "Done!" << std::endl;
 }
 
@@ -292,9 +290,21 @@ unity_incoming::RenderOutput_t FlightGogglesClient::handleImageResponse()
         // Tell OpenCv that the input is RGB.
         if (renderMetadata.channels[i]==3){
             if (stride == 3)
-                cv::cvtColor(new_image, new_image, CV_RGB2BGR);
+            {
+                #if (CV_VERSION_MAJOR >= 4)
+                    cv::cvtColor(new_image, new_image, cv::COLOR_RGB2BGR);
+                #else
+                    cv::cvtColor(new_image, new_image, CV_RGB2BGR);
+                #endif
+            }
             if (stride == 4)
-                cv::cvtColor(new_image, new_image, CV_BGRA2BGR);
+            {
+                #if (CV_VERSION_MAJOR >= 4)
+                    cv::cvtColor(new_image, new_image, cv::COLOR_BGRA2BGR);
+                #else
+                    cv::cvtColor(new_image, new_image, CV_BGRA2BGR);
+                #endif
+            }
         }
 
         // Flip image since OpenCV origin is upper left, but Unity's is lower left.
