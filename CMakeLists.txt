@@ -49,6 +49,9 @@ find_package(Eigen3 REQUIRED)
 include_directories(${EIGEN3_INCLUDE_DIR})
 include_directories(${EIGEN3_INCLUDE_DIR}/unsupported)
 
+# OpenCV
+find_package(OpenCV REQUIRED)
+
 # multicopterDynamicsSim
 include_directories(${INCLUDED_LIBS_DIR}/multicopterDynamicsSim)
 add_library(inertialMeasurementSim ${INCLUDED_LIBS_DIR}/multicopterDynamicsSim/inertialMeasurementSim.cpp)
@@ -58,10 +61,6 @@ target_link_libraries(multicopterDynamicsSim inertialMeasurementSim)
 # carDynamicsSim
 include_directories(${INCLUDED_LIBS_DIR}/carDynamicsSim)
 add_library(carDynamicsSim ${INCLUDED_LIBS_DIR}/carDynamicsSim/carDynamicsSim.cpp)
-
-# FlightGogglesClient
-include_directories(${INCLUDED_LIBS_DIR}/FlightGogglesClient)
-add_subdirectory(${INCLUDED_LIBS_DIR}/FlightGogglesClient)
 
 # python modules
 pybind11_add_module(multicopter_dynamics_sim SHARED
@@ -83,6 +82,6 @@ pybind11_add_module(flightgoggles_client SHARED
   ${INCLUDED_LIBS_DIR}/FlightGogglesClient/moduleFlightGogglesClient.cpp
 )
 target_link_libraries(flightgoggles_client PRIVATE 
-  FlightGogglesClient
+  zmq zmqpp ${OpenCV_LIBS} pthread
   yaml-cpp
 )
